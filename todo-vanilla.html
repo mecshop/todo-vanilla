@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <style>
+            form {
+                max-width: 300px;
+            }
+            .input-wrap,
+            .todo-wrapper {
+                display: flex;
+                gap: 1rem;
+            }
+            .todo-list {
+                margin-top: 50px;
+            }
+            .todo-item {
+                padding: 10px;
+                border-bottom: 1px solid #000;
+            }
+        </style>
+
+        <form id="todo-form">
+            <div class="input-wrap">
+                <input type="text" name="title" id="todo-input" />
+                <button type="submit">Add Task</button>
+            </div>
+        </form>
+
+        <div class="todo-list" id="list"></div>
+
+        <script>
+            const sampleTodos = [
+                {
+                    id: 1,
+                    title: "Todo Title Eut",
+                    // description: "Todo Description",
+                    // category: "todo",
+                    // deadline: "2024-06-12",
+                    // done_at: null,
+                },
+                {
+                    id: 2,
+                    title: "Todo Title 2",
+                    // description: "Todo Description",
+                    // category: "in_progress",
+                    // deadline: "2024-06-12",
+                    // done_at: null,
+                },
+                {
+                    id: 3,
+                    title: "Todo Title Tite",
+                    // description: "Todo Description",
+                    // category: "done",
+                    // deadline: "2024-06-12",
+                    // done_at: "2024-06-12",
+                },
+            ];
+
+            // const sampleTodos = [
+            //     { id: 1, title: "Todo Title Eut" },
+            //     { id: 2, title: "Todo Title 2" },
+            // ];
+
+            // localStorage.setItem("todos", JSON.stringify(sampleTodos));
+            if (localStorage.getItem("todos") === null) {
+                localStorage.setItem("todos", JSON.stringify(sampleTodos));
+            }
+            const todoItems = JSON.parse(localStorage.getItem("todos"));
+            const todoForm = document.getElementById("todo-form");
+            const todoInput = document.getElementById("todo-input");
+            const listWrap = document.getElementById("list");
+
+            for (const todoItem of todoItems) {
+                listWrap.innerHTML += `<div class="todo-item">
+                    <div class="todo-wrapper">
+                        <h3 contenteditable="true"  >${todoItem.title}</h3>
+                       <button class="update-btn">Update</button>
+                       <button class="delete-btn">Delete</button>
+                    </div>
+                </div>`;
+            }
+
+            const deleteItem = () => {
+                const deleteButtons = document.querySelectorAll(".delete-btn");
+                deleteButtons.forEach((deleteButton, i) => {
+                    deleteButton.addEventListener("click", (e) => {
+                        const todoRows =
+                            document.querySelectorAll(".todo-item");
+                        const todoItems = JSON.parse(
+                            localStorage.getItem("todos")
+                        );
+                        todoItems.splice(i, 1);
+
+                        localStorage.setItem(
+                            "todos",
+                            JSON.stringify(todoItems)
+                        );
+
+                        console.log(i);
+                        console.log(todoRows);
+                        todoRows[i].remove();
+                    });
+                });
+            };
+
+            const updateItem = () => {
+                const editButtons = document.querySelectorAll(".update-btn");
+                editButtons.forEach((editButton) => {
+                    editButton.addEventListener("click", (e) => {
+                        const todoItems = JSON.parse(
+                            localStorage.getItem("todos")
+                        );
+                        todoItems.splice(i, 1);
+                        localStorage.setItem(
+                            "todos",
+                            JSON.stringify(todoItems)
+                        );
+                    });
+                });
+            };
+
+            todoForm.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const taskName = todoInput.value;
+                const todoItems = JSON.parse(localStorage.getItem("todos"));
+                const taskId = todoItems.length + 1;
+                const tasks = [...todoItems, { id: taskId, title: taskName }];
+                localStorage.setItem("todos", JSON.stringify(tasks));
+
+                listWrap.innerHTML += `<div class="todo-item">
+                    <div class="todo-wrapper">
+                        <h3 contenteditable="true" >${taskName}</h3>
+                        <button class="update-btn">Update</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>`;
+                deleteItem();
+            });
+
+            deleteItem();
+        </script>
+    </body>
+</html>
